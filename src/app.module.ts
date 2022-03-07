@@ -1,4 +1,5 @@
-import { Module } from '@nestjs/common';
+import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -13,4 +14,8 @@ const getEnv = async () => {
   controllers: [AppController],
   providers: [AppService, ConfigService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
